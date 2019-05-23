@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!--/*@thymesVar id="timestamp" type="java.lang.Long"*/-->
+<!--/*@thymesVar id="IndexConstants" type="java.util.Map"*/-->
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" sizes="16x16" th:href="${IndexConstants['ui.favicon']}">
+    <title th:text="${IndexConstants['ui.title']}"></title>
+    <!--必要CSS-->
+    <link rel="stylesheet" th:href="@{'web-public/external/angular-material/angular-material.min.css'}">
+    <link rel="stylesheet" th:href="@{'web-public/external/angular-busy/angular-busy.min.css'}">
+    <link rel="stylesheet" th:href="@{'web-public/external/font-awesome/web-fonts-with-css/css/fontawesome-all.css'}">
+    <link rel="stylesheet" th:href="@{'web-public/external/material-icons/material-icons.css'}">
+    <link rel="stylesheet" th:href="@{'web-public/fit2cloud/css/fit2cloud-style.css?t='+${timestamp}}">
+
+    <!--可选CSS-->
+    <!--项目CSS-->
+    <link rel="stylesheet" th:href="@{'project/css/project-style.css?t='+${timestamp}}">
+</head>
+
+<body ng-app="ProjectApp" ng-cloak>
+<div layout="column" layout-fill ng-controller="IndexCtrl">
+    <section layout="row" flex>
+        <!--test="menus" -->
+        <module layout="row" states="menus"></module>
+        <md-content layout="column" flex ui-view=""></md-content>
+    </section>
+</div>
+
+<!--必要JS-->
+<script th:src="@{'web-public/external/external.min.js?t='+${timestamp}}"></script>
+<script th:src="@{'web-public/fit2cloud/js/fit2cloud-common.min.js?t='+${timestamp}}"></script>
+<script th:inline="javascript" type="text/javascript">
+    /*<![CDATA[*/
+    window.appversion = [[${timestamp}]];
+    window.IndexConstants = [[${IndexConstants}]];
+    /*]]>*/
+</script>
+
+<!--可选JS-->
+<script th:src="@{'web-public/fit2cloud/js/process-design.js?t='+${timestamp}}"></script>
+<script th:src="@{'web-public/external/echarts/echarts.min.js'}"></script>
+<script th:src="@{'web-public/external/echarts/fit2cloud-echarts-theme.js?t='+${timestamp}}"></script>
+
+<!--项目JS-->
+<script th:src="@{'project/js/app.js'}"></script>
+
+</body>
+</html>
