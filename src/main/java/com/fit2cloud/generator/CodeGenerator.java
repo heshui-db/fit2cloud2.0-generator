@@ -4,7 +4,6 @@ import org.beetl.core.Configuration;
 import org.beetl.core.GroupTemplate;
 import org.beetl.core.Template;
 import org.beetl.core.resource.ClasspathResourceLoader;
-import org.springframework.util.StringUtils;
 
 import java.io.*;
 import java.util.Properties;
@@ -85,11 +84,12 @@ public class CodeGenerator {
         } catch (Exception e) {
             throw new RuntimeException("code build error", e);
         }
+        handleProject(this.projectPath + File.separator + this.projectName);
         System.out.println("code generate success");
     }
 
     private File createProject() throws Exception {
-        File rootDir = new File(this.projectPath + File.separator + projectName);
+        File rootDir = new File(this.projectPath + File.separator + this.projectName);
         rootDir.mkdir();
         generate(TEMPLATE_RESOURCE);
         return rootDir;
@@ -98,17 +98,17 @@ public class CodeGenerator {
     private void generate(String templatePath) throws Exception {
         File file = new File(templatePath);
         if (file.isDirectory()) {
-            for (File listFile : file.listFiles()) {
-                if (listFile.isDirectory()) {
-                    if (listFile.getName().equals("com")) {
-                        this.generateDirectory(capturePackage(listFile.getAbsolutePath().replace(TEMPLATE_RESOURCE, "")));
+            for (File f : file.listFiles()) {
+                if (f.isDirectory()) {
+                    if (f.getName().equals("com")) {
+                        this.generateDirectory(capturePackage(f.getAbsolutePath().replace(TEMPLATE_RESOURCE, "")));
                         this.generate(templatePath + "/com/fit2cloud/demo");
                     } else {
-                        this.generateDirectory(capturePath(listFile.getAbsolutePath().replace(TEMPLATE_RESOURCE, "")));
-                        this.generate(templatePath + "/" + listFile.getName());
+                        this.generateDirectory(capturePath(f.getAbsolutePath().replace(TEMPLATE_RESOURCE, "")));
+                        this.generate(templatePath + "/" + f.getName());
                     }
                 } else {
-                    this.generateFile(listFile.getAbsolutePath().replace(TEMPLATE_RESOURCE, ""));
+                    this.generateFile(f.getAbsolutePath().replace(TEMPLATE_RESOURCE, ""));
                 }
             }
         }
@@ -146,9 +146,7 @@ public class CodeGenerator {
     }
 
     private String capturePackageName(String name) {
-        if (StringUtils.isEmpty(name)) {
-            throw new RuntimeException("project name is empty");
-        }
+        if (name == null || name.equals("")) throw new RuntimeException("project name is empty");
         if (name.contains("-")) {
             String[] strings = name.split("-");
             name = strings[strings.length - 1];
@@ -169,13 +167,32 @@ public class CodeGenerator {
         return properties;
     }
 
-    public String string2Unicode(String string) {
+    private String string2Unicode(String string) {
         StringBuilder unicode = new StringBuilder();
         for (int i = 0; i < string.length(); i++) {
             char c = string.charAt(i);
             unicode.append("\\u").append(Integer.toHexString(c));
         }
         return unicode.toString();
+    }
+
+    private void handleProject(String path) {
+        File file = new File(path);
+        if (!file.exists()) {
+            return;
+        }
+        if (file.isDirectory()) {
+            for (File f : file.listFiles()) {
+                if (f.isDirectory()) {
+                    handleProject(f.getAbsolutePath());
+                } else {
+                    if (".gitkeep".equals(f.getName())) {
+                        f.delete();
+                    }
+                }
+            }
+
+        }
     }
 }
 
