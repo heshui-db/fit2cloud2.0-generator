@@ -1,12 +1,14 @@
-package #{packagePath}.job;
+package
+
+#{packagePath}.job;
 
 import com.fit2cloud.quartz.anno.QuartzScheduled;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SyncDemo {
+public class SyncJob {
     @QuartzScheduled(cron = "${cron.expression.demo}")
-    public void syncCloudServer() {
-        System.out.println("this is demo");
+    public void sync() {
+        System.out.println("todo");
     }
 }
