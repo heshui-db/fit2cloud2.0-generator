@@ -10,7 +10,7 @@ git clone https://github.com/dongbintop/fit2cloud2.0-generator.git
 - 参数配置
 ```bash
 resource下的 config.properties
-eg:
+
 # 模块名称(小写)，默认fit2cloud2.0-demo
 module.name=paas-database
 # 模块概览，默认${module.name}
@@ -28,6 +28,10 @@ groupId=com.fit2cloud
 # 默认 2.0.0
 version=2.0.0
 ```
+
+- 生成截图
+
+![avatar](./console.png)
 
 
 

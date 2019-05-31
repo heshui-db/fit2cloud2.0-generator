@@ -53,6 +53,7 @@ public class CodeGenerator {
     }
 
     CodeGenerator() {
+        banner();
         Properties properties = readConfig();
         this.projectName = properties.getProperty("module.name", DEFAULT_PROJECT_NAME);
         this.projectSummary = properties.getProperty("module.summary", DEFAULT_PROJECT_NAME);
@@ -74,18 +75,20 @@ public class CodeGenerator {
 
         this.version = properties.getProperty("version", DEFAULT_VERSION);
 
-        System.out.println("init config param success");
+        System.out.println("-----------初始化配置信息-----------");
     }
 
     void build() {
-        System.out.println("begin code generate...");
+        System.out.println("-----------开始生成项目-----------");
         try {
             createProject();
         } catch (Exception e) {
             throw new RuntimeException("code build error", e);
         }
         handleProject(this.projectPath + File.separator + this.projectName);
-        System.out.println("code generate success");
+        System.out.println("-----------项目生成成功-----------");
+        System.out.println("-----------项目路径:" + this.projectPath + File.separator + this.projectName);
+        treeProject();
     }
 
     private File createProject() throws Exception {
@@ -125,7 +128,6 @@ public class CodeGenerator {
     private void generateDirectory(String templateDir) {
         File targetFile = new File(this.projectPath + File.separator + projectName + templateDir);
         targetFile.mkdirs();
-        System.out.println("generate directory: " + targetFile.getAbsolutePath());
     }
 
     private void generateFile(String templateDir) throws Exception {
@@ -141,8 +143,6 @@ public class CodeGenerator {
         t.binding("version", this.version.trim());
         t.renderTo(os);
         os.close();
-
-        System.out.println("generate file: " + targetFile.getAbsolutePath());
     }
 
     private String capturePackageName(String name) {
@@ -155,7 +155,6 @@ public class CodeGenerator {
     }
 
     private Properties readConfig() {
-        System.out.println("read code generate config file ...");
         Properties properties = new Properties();
         try {
             InputStream inputStream = getClass().getClassLoader().getResourceAsStream("config.properties");
@@ -192,6 +191,39 @@ public class CodeGenerator {
                 }
             }
 
+        }
+    }
+
+    private void banner() {
+        try {
+            System.out.println();
+            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("banner.txt");
+            BufferedReader bf = new BufferedReader(new InputStreamReader(inputStream));
+            String line;
+            while ((line = bf.readLine()) != null) {
+                System.out.println(line);
+            }
+            bf.close();
+            System.out.println();
+        } catch (Exception e) {
+            // not do
+        }
+    }
+
+    private void treeProject() {
+        Process p;
+        try {
+            p = Runtime.getRuntime().exec("tree " + this.projectPath + File.separator + this.projectName);
+            InputStream fis = p.getInputStream();
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader br = new BufferedReader(isr);
+            String line;
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
+
+            }
+        } catch (Exception e) {
+            // not do
         }
     }
 }
