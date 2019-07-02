@@ -218,16 +218,14 @@ public class CodeGenerator {
     }
 
     private void treeProject() {
-        Process p;
         try {
-            p = Runtime.getRuntime().exec("tree " + this.projectPath + File.separator + this.applicationName);
+            Process p = Runtime.getRuntime().exec("tree " + this.projectPath + File.separator + this.applicationName);
             InputStream fis = p.getInputStream();
             InputStreamReader isr = new InputStreamReader(fis);
             BufferedReader br = new BufferedReader(isr);
             String line;
             while ((line = br.readLine()) != null) {
                 System.out.println(line);
-
             }
         } catch (Exception e) {
             // not do
