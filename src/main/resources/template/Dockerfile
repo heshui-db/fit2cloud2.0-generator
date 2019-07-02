@@ -4,9 +4,9 @@ MAINTAINER FIT2CLOUD <support@fit2cloud.com>
 
 RUN mkdir -p /opt/apps
 
-ADD target/#{projectName}-#{version}.jar /opt/apps
+ADD target/#{applicationName}-#{version}.jar /opt/apps
 
-ENV JAVA_APP_JAR=/opt/apps/#{projectName}-#{version}.jar
+ENV JAVA_APP_JAR=/opt/apps/#{applicationName}-#{version}.jar
 
 ENV AB_OFF=true
 

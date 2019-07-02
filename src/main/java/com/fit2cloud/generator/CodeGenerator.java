@@ -10,33 +10,12 @@ import java.util.Properties;
 
 public class CodeGenerator {
 
-    private static final String DEFAULT_PROJECT_NAME = "fit2cloud2.0-demo";
+    private static final String DEFAULT_APPLICATION_NAME = "fit2cloud2.0-demo";
+    private static final String DEFAULT_PROJECT_NAME = "Demo";
     private static final String DEFAULT_GROUP_ID = "com.fit2cloud";
     private static final String DEFAULT_VERSION = "2.0.0";
-
-    //项目名称
-    private String projectName;
-    //项目描述
-    private String projectSummary;
-    //项目顺序
-    private Integer projectOrder = 20;
-    //项目端口
-    private Integer projectPort = 8080;
-
-    //生成项目本机路径
-    private String projectPath;
-
-    //项目包路径
-    private String packagePath;
-
-    private String groupId;
-
-    private String version;
-
-
-    private static GroupTemplate gt;
     private static final String TEMPLATE_DIR = "template";
-    private String TEMPLATE_RESOURCE = this.getClass().getClassLoader().getResource(TEMPLATE_DIR).getPath();
+    private static GroupTemplate gt;
 
     static {
         ClasspathResourceLoader resourceLoader = new ClasspathResourceLoader(
@@ -52,9 +31,27 @@ public class CodeGenerator {
         }
     }
 
+    private String applicationName;
+    //项目名称
+    private String projectName;
+    //项目描述
+    private String projectSummary;
+    //项目顺序
+    private Integer projectOrder = 20;
+    //项目端口
+    private Integer projectPort = 8080;
+    //生成项目本机路径
+    private String projectPath;
+    //项目包路径
+    private String packagePath;
+    private String groupId;
+    private String version;
+    private String TEMPLATE_RESOURCE = this.getClass().getClassLoader().getResource(TEMPLATE_DIR).getPath();
+
     CodeGenerator() {
         banner();
         Properties properties = readConfig();
+        this.applicationName = properties.getProperty("application.name", DEFAULT_APPLICATION_NAME);
         this.projectName = properties.getProperty("module.name", DEFAULT_PROJECT_NAME);
         this.projectSummary = properties.getProperty("module.summary", DEFAULT_PROJECT_NAME);
         try {
@@ -69,7 +66,7 @@ public class CodeGenerator {
         }
         this.projectPath = properties.getProperty("projectPath",
                 System.getProperty("user.home"));
-        this.packagePath = properties.getProperty("package", "com.fit2cloud." + capturePackageName(projectName));
+        this.packagePath = properties.getProperty("package", "com.fit2cloud." + capturePackageName(applicationName));
 
         this.groupId = properties.getProperty("groupId", DEFAULT_GROUP_ID);
 
@@ -85,14 +82,14 @@ public class CodeGenerator {
         } catch (Exception e) {
             throw new RuntimeException("code build error", e);
         }
-        handleProject(this.projectPath + File.separator + this.projectName);
+        handleProject(this.projectPath + File.separator + this.applicationName);
         System.out.println("-----------项目生成成功-----------");
-        System.out.println("-----------项目路径:" + this.projectPath + File.separator + this.projectName);
+        System.out.println("-----------项目路径:" + this.projectPath + File.separator + this.applicationName);
         treeProject();
     }
 
     private File createProject() throws Exception {
-        File rootDir = new File(this.projectPath + File.separator + this.projectName);
+        File rootDir = new File(this.projectPath + File.separator + this.applicationName);
         rootDir.mkdir();
         generate(TEMPLATE_RESOURCE);
         return rootDir;
@@ -126,16 +123,17 @@ public class CodeGenerator {
     }
 
     private void generateDirectory(String templateDir) {
-        File targetFile = new File(this.projectPath + File.separator + projectName + templateDir);
+        File targetFile = new File(this.projectPath + File.separator + applicationName + templateDir);
         targetFile.mkdirs();
     }
 
     private void generateFile(String templateDir) throws Exception {
-        File targetFile = new File(this.projectPath + File.separator + projectName + capturePath(templateDir));
+        File targetFile = new File(this.projectPath + File.separator + applicationName + capturePath(templateDir));
         OutputStream os = new FileOutputStream(targetFile);
         Template t = gt.getTemplate(templateDir);
-        t.binding("projectName", this.projectName.trim());
-        t.binding("projectSummary", string2Unicode(this.projectSummary).trim());
+        t.binding("applicationName", this.applicationName.trim());
+        t.binding("projectName", string2Unicode(this.projectName.trim()));
+        t.binding("projectSummary", string2Unicode(this.projectSummary.trim()));
         t.binding("projectOrder", this.projectOrder);
         t.binding("projectPort", this.projectPort);
         t.binding("packagePath", this.packagePath.trim());
@@ -169,8 +167,17 @@ public class CodeGenerator {
     private String string2Unicode(String string) {
         StringBuilder unicode = new StringBuilder();
         for (int i = 0; i < string.length(); i++) {
-            char c = string.charAt(i);
-            unicode.append("\\u").append(Integer.toHexString(c));
+            char ch = string.charAt(i);
+            if (ch < 0x10) {
+                unicode.append("\\u000");
+            } else if (ch < 0x100) {
+                unicode.append("\\u00");
+            } else if (ch < 0x1000) {
+                unicode.append("\\u0");
+            } else {
+                unicode.append("\\u");
+            }
+            unicode.append(Integer.toHexString(ch));
         }
         return unicode.toString();
     }
@@ -213,7 +220,7 @@ public class CodeGenerator {
     private void treeProject() {
         Process p;
         try {
-            p = Runtime.getRuntime().exec("tree " + this.projectPath + File.separator + this.projectName);
+            p = Runtime.getRuntime().exec("tree " + this.projectPath + File.separator + this.applicationName);
             InputStream fis = p.getInputStream();
             InputStreamReader isr = new InputStreamReader(fis);
             BufferedReader br = new BufferedReader(isr);

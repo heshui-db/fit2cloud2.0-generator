@@ -2,8 +2,8 @@ version: '2.1'
 services:
 
   module-demo-service:
-    image: registry.fit2cloud.com/fit2cloud2-extention/#{projectName}:latest
-    container_name: #{projectName}-service
+    image: registry.fit2cloud.com/fit2cloud2-extention/#{applicationName}:latest
+    container_name: #{applicationName}-service
     volumes:
       - share-volume:/opt/fit2cloud/share
       - host-opt-fit2cloud-conf:/opt/fit2cloud/conf

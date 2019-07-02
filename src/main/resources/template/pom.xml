@@ -4,11 +4,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>#{groupId}</groupId>
-    <artifactId>#{projectName}</artifactId>
+    <artifactId>#{applicationName}</artifactId>
     <version>#{version}</version>
     <packaging>jar</packaging>
 
-    <name>#{projectName}</name>
+    <name>#{applicationName}</name>
     <description>Module demo project for FIT2CLOUD 2.0</description>
 
     <parent>

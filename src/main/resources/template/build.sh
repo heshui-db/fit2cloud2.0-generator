@@ -16,7 +16,7 @@ fi
 echo "eureka.client.enabled=true" >> $property_file
 
 echo "$module_version=$version" >> $property_file
-image_url="registry.fit2cloud.com/fit2cloud2-extention/#{projectName}:latest"
+image_url="registry.fit2cloud.com/fit2cloud2-extention/#{applicationName}:latest"
 image_name=`echo $image_url | awk -F"/" '{ print $3 }'`
 image=`echo $image_name | awk -F":" '{ print $1 }'`
 
