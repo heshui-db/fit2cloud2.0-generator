@@ -64,8 +64,7 @@ public class CodeGenerator {
         } catch (Exception e) {
             //not do
         }
-        this.projectPath = properties.getProperty("projectPath",
-                System.getProperty("user.home"));
+        this.projectPath = "/opt/generator/";
         this.packagePath = properties.getProperty("package", "com.fit2cloud." + capturePackageName(applicationName));
 
         this.groupId = properties.getProperty("groupId", DEFAULT_GROUP_ID);
@@ -155,7 +154,13 @@ public class CodeGenerator {
     private Properties readConfig() {
         Properties properties = new Properties();
         try {
-            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("config.properties");
+            File file = new File("/opt/generator/config.properties");
+            InputStream inputStream;
+            if (file.exists()) {
+                inputStream = new FileInputStream(file);
+            } else {
+                inputStream = getClass().getClassLoader().getResourceAsStream("config.properties");
+            }
             properties.load(inputStream);
             inputStream.close();
         } catch (Exception e) {

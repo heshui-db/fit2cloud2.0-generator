@@ -21,8 +21,6 @@ module.summary=FIT2CLOUD 数据开放平台
 module.order=20
 # 模块端口，默认8080
 module.port=6616
-# 项目生成路径，默认 user.home
-projectPath=/Users/dongbin/Documents/java
 # 项目包名称，默认com.fit2cloud. 加上 ${module.name}最后一个单词
 package=com.fit2cloud.dbaas.dongbin
 # 默认 com.fit2cloud
@@ -35,6 +33,19 @@ version=2.0.0
 - 生成截图
 
 ![avatar](./console.png)
+
+
+- docker 生成代码
+
+```properties
+修改 build.sh 的镜像地址
+
+config.properties 文件 要挂载到容器的 /opt/generator 目录，并且项目生成的目录为容器/opt/generator
+所以 docker run -v 本机目录:/opt/generator --rm 镜像地址
+
+执行结束  项目在 /opt/generator/ 下
+
+```
 
 
 
