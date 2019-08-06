@@ -46,7 +46,7 @@ public class CodeGenerator {
     private String packagePath;
     private String groupId;
     private String version;
-    private String TEMPLATE_RESOURCE = this.getClass().getClassLoader().getResource(TEMPLATE_DIR).getPath();
+    private String TEMPLATE_RESOURCE = "/opt/apps/classes/template";
 
     CodeGenerator() {
         banner();
@@ -64,7 +64,7 @@ public class CodeGenerator {
         } catch (Exception e) {
             //not do
         }
-        this.projectPath = "/opt/generator/";
+        this.projectPath = "/opt/generator";
         this.packagePath = properties.getProperty("package", "com.fit2cloud." + capturePackageName(applicationName));
 
         this.groupId = properties.getProperty("groupId", DEFAULT_GROUP_ID);
@@ -90,12 +90,15 @@ public class CodeGenerator {
     private File createProject() throws Exception {
         File rootDir = new File(this.projectPath + File.separator + this.applicationName);
         rootDir.mkdir();
+        System.out.println(TEMPLATE_RESOURCE);
         generate(TEMPLATE_RESOURCE);
         return rootDir;
     }
 
     private void generate(String templatePath) throws Exception {
         File file = new File(templatePath);
+        System.out.println(file.getPath());
+        System.out.println(file.isDirectory());
         if (file.isDirectory()) {
             for (File f : file.listFiles()) {
                 if (f.isDirectory()) {
@@ -188,6 +191,7 @@ public class CodeGenerator {
     }
 
     private void handleProject(String path) {
+        System.out.println(path);
         File file = new File(path);
         if (!file.exists()) {
             return;
